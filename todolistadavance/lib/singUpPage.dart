@@ -83,7 +83,7 @@ class _NewAccountState extends State {
                     height: MediaQuery.sizeOf(context).height,
                     width: MediaQuery.sizeOf(context).width,
                     child: Image.asset(
-                      "assets/images/background4.jpg",
+                      "assets/images/background5.jpg",
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -280,23 +280,24 @@ class _NewAccountState extends State {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
-                            height: 2,
-                            width: 100,
+                            height: 1.5,
+                            width: 95,
                             decoration: const BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
-                                  Color.fromARGB(34, 103, 102, 102),
-                                  Color.fromARGB(143, 87, 86, 86),
+                                  Color.fromARGB(13, 103, 102, 102),
+                                  Color.fromARGB(85, 103, 102, 102),
+                                  Color.fromARGB(150, 87, 86, 86),
                                   Color.fromARGB(234, 41, 41, 41),
                                 ],
                               ),
                             ),
                           ),
                           const SizedBox(
-                            width: 12,
+                            width: 10,
                           ),
                           const Text(
-                            "Or sign up with",
+                            "Or Sign up with",
                             style: TextStyle(
                                 fontWeight: FontWeight.w400, fontSize: 15),
                           ),
@@ -304,14 +305,15 @@ class _NewAccountState extends State {
                             width: 12,
                           ),
                           Container(
-                            height: 2,
-                            width: 100,
+                            height: 1.5,
+                            width: 95,
                             decoration: const BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
                                   Color.fromARGB(234, 41, 41, 41),
-                                  Color.fromARGB(143, 87, 86, 86),
-                                  Color.fromARGB(34, 103, 102, 102),
+                                  Color.fromARGB(150, 87, 86, 86),
+                                  Color.fromARGB(85, 103, 102, 102),
+                                  Color.fromARGB(13, 103, 102, 102),
                                 ],
                               ),
                             ),

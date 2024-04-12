@@ -1,8 +1,6 @@
 import 'dart:ui';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:todolistadavance/databaseConnection.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -84,7 +82,8 @@ class _MyHomePageState extends State<MyHomePage> {
       }
       Navigator.of(context).pop();
     }
-    cards = await UserInfo.getObject().getTasksList();
+    cards = await UserInfo.getObject()
+        .getTasksList(userName2: UserInfo.getObject().userName);
     setState(() {});
   }
 
@@ -184,10 +183,11 @@ class _MyHomePageState extends State<MyHomePage> {
                               color: Color.fromRGBO(111, 81, 255, 1),
                             )),
                         TextFormField(
+                          maxLines: 2,
                           controller: descriptionController,
                           decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 35.0, horizontal: 10.0),
+                            /* contentPadding: EdgeInsets.symmetric(
+                                vertical: 35.0, horizontal: 10.0),*/
                             labelStyle: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
@@ -362,37 +362,41 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                   Expanded(
-                    child: Container(
-                      width: double.infinity,
-                      margin: const EdgeInsets.only(top: 18),
-                      padding: const EdgeInsets.only(top: 50),
-                      decoration: const BoxDecoration(
-                        color: Color.fromRGBO(255, 255, 255, 1),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(40),
-                          topRight: Radius.circular(40),
-                        ),
-                      ),
-                      child: (cards.isNotEmpty)
-                          ? ListView.builder(
-                              itemCount: cards.length,
-                              itemBuilder: (context, index) {
-                                return getCard(cards[index]);
-                              },
-                            )
-                          : Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  child: Image.asset(
-                                    "assets/images/noTask.png",
-                                    height: 150,
-                                    width: 150,
-                                  ),
-                                ),
-                                Text("        No Task Found ")
-                              ],
+                    child: Stack(
+                      children: [
+                        Container(
+                          width: double.infinity,
+                          margin: const EdgeInsets.only(top: 18),
+                          padding: const EdgeInsets.only(top: 35),
+                          decoration: const BoxDecoration(
+                            color: Color.fromRGBO(255, 255, 255, 1),
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(40),
+                              topRight: Radius.circular(40),
                             ),
+                          ),
+                          child: (cards.isNotEmpty)
+                              ? ListView.builder(
+                                  itemCount: cards.length,
+                                  itemBuilder: (context, index) {
+                                    return getCard(cards[index]);
+                                  },
+                                )
+                              : Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      child: Image.asset(
+                                        "assets/images/noTask.png",
+                                        height: 150,
+                                        width: 150,
+                                      ),
+                                    ),
+                                    const Text("        No Task Found ")
+                                  ],
+                                ),
+                        ),
+                      ],
                     ),
                   )
                 ],
@@ -406,45 +410,53 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget getCard(Map task) {
     return GestureDetector(
-      onTap: () {
-        // slideable return tyachya jagevar gek payje
-      },
       child: Slidable(
         //closeOnScroll: false,
         endActionPane: ActionPane(
-            extentRatio: 0.23,
+            extentRatio: 0.21,
             // openThreshold: 0.9,
             motion: Column(
               children: [
                 const SizedBox(
-                  height: 30,
+                  height: 10,
                 ),
                 GestureDetector(
                   onTap: () {
                     showMyBottomShett(todoEdit: true, task: task);
                   },
-                  child: const Icon(
-                    Icons.edit,
-                    size: 20,
-                    color: Color.fromRGBO(111, 81, 255, 1),
+                  child: const CircleAvatar(
+                    backgroundColor: Color.fromRGBO(111, 81, 255, 1),
+                    radius: 18,
+                    child: Icon(
+                      Icons.edit_outlined,
+                      size: 20,
+                      color: Color.fromRGBO(255, 255, 255, 1),
+                    ),
                   ),
                 ),
                 const SizedBox(
-                  height: 25,
+                  height: 10,
                 ),
                 GestureDetector(
                   onTap: () {
                     deleteTask(task);
                   },
-                  child: const Icon(
-                    Icons.delete,
-                    size: 20,
-                    color: Color.fromRGBO(111, 81, 255, 1),
+                  child: const CircleAvatar(
+                    radius: 18,
+                    backgroundColor: Color.fromRGBO(111, 81, 255, 1),
+                    child: Icon(
+                      Icons.delete_outline,
+                      size: 20,
+                      color: Color.fromRGBO(255, 255, 255, 1),
+                    ),
                   ),
                 )
               ],
             ),
-            children: const [Icon(Icons.edit), Icon(Icons.delete)]),
+            children: const [
+              Icon(Icons.edit),
+              Icon(Icons.delete),
+            ]),
         child: Container(
           margin: const EdgeInsets.symmetric(vertical: 8),
           padding: const EdgeInsets.all(15),
@@ -525,7 +537,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   GestureDetector(
                     child: Container(
                       height: 16,
-                      width: 16,
+                      width: 10,
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         //color: Color.fromRGBO(4, 189, 0, 1),
@@ -548,13 +560,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void deleteTask(Map task) async {
     UserInfo.getObject().deleteTaskFromDataBAse(taskId: task["id"]);
-    cards = await UserInfo.getObject().getTasksList();
+    cards = await UserInfo.getObject()
+        .getTasksList(userName2: UserInfo.getObject().userName);
     setState(() {});
   }
 
   void updateTask({required NewTask taskToBeUpdate}) async {
     await UserInfo.getObject().updateTaskInDataBase(task: taskToBeUpdate);
-    cards = await UserInfo.getObject().getTasksList();
+    cards = await UserInfo.getObject()
+        .getTasksList(userName2: UserInfo.getObject().userName);
     setState(() {});
   }
 }

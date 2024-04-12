@@ -45,7 +45,7 @@ class Tasks {
 // initialise database
 Future<Database> databaseint() async {
   final database = openDatabase(
-    join(await getDatabasesPath(), "todolist4.db"),
+    join(await getDatabasesPath(), "todolist7.db"),
     version: 1,
     onCreate: (db, version) {
       db.execute('''CREATE TABLE users(
@@ -60,6 +60,11 @@ Future<Database> databaseint() async {
                     date TEXT,
                     userName TEXT,
                     FOREIGN KEY (userName) REFERENCES users(userName)
+                )''');
+      db.execute('''CREATE TABLE currentUser(
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    userName TEXT,
+                    password TEXT
                 )''');
     },
   );
@@ -85,12 +90,45 @@ class UserInfo {
 
   // add new user in database
   Future<void> insertNewUser(NewUser nu) async {
+    await getDatabase();
     final localDB = await database;
     localDB.insert(
       'users',
       nu.userMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+  }
+
+  Future<void> insertCurrentUser(String currentUser, String password) async {
+    await getDatabase();
+    final localDB = await database;
+    List user = await getCurrentUser();
+    if (user.isEmpty) {
+      localDB.insert(
+        'currentUser',
+        {"userName": currentUser, "password": password},
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+      print("currebt user inserted succefully");
+    } else {
+      localDB.update(
+        'currentUser',
+        {"userName": currentUser, "password": password},
+        where: "id = ?",
+        whereArgs: [1],
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }
+  }
+
+  Future<List> getCurrentUser() async {
+    await getDatabase();
+    final localDB = await database;
+    List<Map<String, dynamic>> mapEntry =
+        await localDB.query("currentUser", where: 'id = ?', whereArgs: [1]);
+
+    List currentUserList = mapEntry;
+    return currentUserList;
   }
 
   // add new task in database for that user
@@ -130,20 +168,21 @@ class UserInfo {
     }
   }
 
-  // create object of newTask model class and pass to add in database
-
   // return list of all users
   Future<List<Map<String, dynamic>>> getUserList() async {
+    await getDatabase();
     final localDB = await database;
     List<Map<String, dynamic>> mapEntry = await localDB.query("users");
     return mapEntry;
   }
 
   //return list of all tasks for the specific user
-  Future<List<Map<String, dynamic>>> getTasksList() async {
+  Future<List<Map<String, dynamic>>> getTasksList({
+    required String userName2,
+  }) async {
     final localDB = await database;
     List<Map<String, dynamic>> mapEntry = await localDB
-        .query("tasks", where: 'userName = ?', whereArgs: [userName]);
+        .query("tasks", where: 'userName = ?', whereArgs: [userName2]);
     return mapEntry;
   }
 

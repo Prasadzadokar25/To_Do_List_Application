@@ -30,9 +30,11 @@ class _LoginState extends State {
           (await UserInfo.getObject()
                   .getPassword(userName: usernameController.text) ==
               passwordController.text)) {
+        await UserInfo.getObject().insertCurrentUser(
+            usernameController.text, passwordController.text);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            backgroundColor: Color.fromARGB(255, 130, 255, 144),
+            backgroundColor: Color.fromARGB(232, 172, 255, 130),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(15),
@@ -43,7 +45,7 @@ class _LoginState extends State {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Login successful 😀 !",
+                  "Login Successful !",
                   style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 16,
@@ -86,7 +88,8 @@ class _LoginState extends State {
     await UserInfo.getObject().getDatabase();
     if (await loginInfoIsCorrect()) {
       UserInfo.getObject().userName = usernameController.text.trim();
-      List taskList = await UserInfo.getObject().getTasksList();
+      List taskList = await UserInfo.getObject()
+          .getTasksList(userName2: usernameController.text);
       Navigator.push(
         context,
         PageRouteBuilder(
@@ -119,6 +122,7 @@ class _LoginState extends State {
     );
   }
 
+  bool obscureText = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -132,20 +136,20 @@ class _LoginState extends State {
               height: MediaQuery.sizeOf(context).height,
               width: MediaQuery.sizeOf(context).width,
               child: Image.asset(
-                "assets/images/background4.jpg",
+                "assets/images/background5.jpg",
                 fit: BoxFit.cover,
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(45),
+              padding: const EdgeInsets.all(42),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const SizedBox(
-                    height: 5.0,
+                    height: 35.0,
                   ),
                   Image.asset(
-                    "assets/images/user.png",
+                    "assets/images/user2.png",
                     height: 160,
                     width: 160,
                   ),
@@ -222,7 +226,7 @@ class _LoginState extends State {
                             ),
                           ),
                           const SizedBox(
-                            height: 10.0,
+                            height: 5.0,
                           ),
                           SizedBox(
                             child: TextFormField(
@@ -238,7 +242,7 @@ class _LoginState extends State {
                                 setState(() {});
                               },
                               controller: passwordController,
-                              obscureText: true,
+                              obscureText: obscureText,
                               decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.symmetric(
                                       vertical: 13.0, horizontal: 10.0),
@@ -258,6 +262,16 @@ class _LoginState extends State {
                                       borderSide: BorderSide(
                                           color: Colors.red.shade800)),
                                   prefixIcon: const Icon(Icons.key),
+                                  suffix: GestureDetector(
+                                    onTap: () {
+                                      obscureText = !obscureText;
+                                      setState(() {});
+                                    },
+                                    child: const Icon(
+                                      Icons.remove_red_eye,
+                                      color: Color.fromARGB(226, 64, 64, 64),
+                                    ),
+                                  ),
                                   labelText: 'Password',
                                   labelStyle: const TextStyle(
                                       fontSize: 17,
@@ -271,7 +285,7 @@ class _LoginState extends State {
                       )),
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                     const SizedBox(
-                      width: 150,
+                      width: 145,
                     ),
                     TextButton(
                       onPressed: () {},
@@ -314,14 +328,14 @@ class _LoginState extends State {
                         ),
                       )),
                   const SizedBox(
-                    height: 40.0,
+                    height: 30.0,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
                         height: 1.5,
-                        width: 100,
+                        width: 95,
                         decoration: const BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
@@ -346,7 +360,7 @@ class _LoginState extends State {
                       ),
                       Container(
                         height: 1.5,
-                        width: 100,
+                        width: 95,
                         decoration: const BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
