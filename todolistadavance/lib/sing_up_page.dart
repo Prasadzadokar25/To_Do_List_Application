@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
-import "databaseConnection.dart";
-import "loginPage.dart";
+import "database_connection.dart";
+import "login_page.dart";
 
 class NewAccount extends StatefulWidget {
   const NewAccount({super.key});

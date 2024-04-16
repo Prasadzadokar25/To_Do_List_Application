@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:todolistadavance/toDoListHome.dart';
-import 'databaseConnection.dart';
-import 'singUpPage.dart';
+import 'package:todolistadavance/to_do_list_home.dart';
+import 'database_connection.dart';
+import 'sing_up_page.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -90,15 +90,13 @@ class _LoginState extends State {
       UserInfo.getObject().userName = usernameController.text.trim();
       List taskList = await UserInfo.getObject()
           .getTasksList(userName2: usernameController.text);
-      Navigator.push(
+
+      Navigator.pushReplacement(
         context,
-        PageRouteBuilder(
-          transitionDuration: const Duration(milliseconds: 150),
-          pageBuilder: (context, animation, _) {
-            return FadeTransition(
-              opacity: animation,
-              child: MyHomePage(taskList: taskList),
-            );
+        MaterialPageRoute(
+          //transitionDuration: const Duration(milliseconds: 150),
+          builder: (context) {
+            return MyHomePage(taskList: taskList);
           },
         ),
       );
@@ -123,6 +121,20 @@ class _LoginState extends State {
   }
 
   bool obscureText = true;
+
+  @override
+  initState() {
+    super.initState();
+
+    getUser();
+  }
+
+  // ignore: prefer_typing_uninitialized_variables
+  var list;
+  getUser() async {
+    list = await UserInfo.getObject().getCurrentUser();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -284,9 +296,7 @@ class _LoginState extends State {
                         ],
                       )),
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    const SizedBox(
-                      width: 145,
-                    ),
+                    const Spacer(),
                     TextButton(
                       onPressed: () {},
                       style: const ButtonStyle(),
@@ -335,7 +345,7 @@ class _LoginState extends State {
                     children: [
                       Container(
                         height: 1.5,
-                        width: 95,
+                        width: 90,
                         decoration: const BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
@@ -360,7 +370,7 @@ class _LoginState extends State {
                       ),
                       Container(
                         height: 1.5,
-                        width: 95,
+                        width: 90,
                         decoration: const BoxDecoration(
                           gradient: LinearGradient(
                             colors: [

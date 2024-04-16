@@ -45,7 +45,7 @@ class Tasks {
 // initialise database
 Future<Database> databaseint() async {
   final database = openDatabase(
-    join(await getDatabasesPath(), "todolist7.db"),
+    join(await getDatabasesPath(), "todolist8.db"),
     version: 1,
     onCreate: (db, version) {
       db.execute('''CREATE TABLE users(
@@ -74,9 +74,12 @@ Future<Database> databaseint() async {
 // information class [ sarv app chi information assess karanyat madat karel]
 class UserInfo {
   static UserInfo obj = UserInfo();
+  // ignore: prefer_typing_uninitialized_variables
   var database;
   String userName = "";
 
+  // ignore: prefer_typing_uninitialized_variables
+  var user;
 // To return the single obbject of the class(single tan desine patten)
 // if we create a new object each time database not get initialise for that object and we get null database error
   static UserInfo getObject() {
@@ -99,17 +102,24 @@ class UserInfo {
     );
   }
 
+  Future<void> removeCurrentUser() async {
+    final localDB = await database;
+    localDB.delete(
+      'currentUser',
+    );
+  }
+
   Future<void> insertCurrentUser(String currentUser, String password) async {
     await getDatabase();
     final localDB = await database;
-    List user = await getCurrentUser();
+    user = await getCurrentUser();
+    await removeCurrentUser();
     if (user.isEmpty) {
       localDB.insert(
         'currentUser',
         {"userName": currentUser, "password": password},
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
-      print("currebt user inserted succefully");
     } else {
       localDB.update(
         'currentUser',
@@ -118,14 +128,14 @@ class UserInfo {
         whereArgs: [1],
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
+      user = await getCurrentUser();
     }
   }
 
   Future<List> getCurrentUser() async {
     await getDatabase();
     final localDB = await database;
-    List<Map<String, dynamic>> mapEntry =
-        await localDB.query("currentUser", where: 'id = ?', whereArgs: [1]);
+    List<Map<String, dynamic>> mapEntry = await localDB.query("currentUser");
 
     List currentUserList = mapEntry;
     return currentUserList;
@@ -158,9 +168,7 @@ class UserInfo {
       );
       await insertNewUser(newUser);
       List<Map<String, dynamic>> retVal = await getUserList();
-      for (int i = 0; i < retVal.length; i++) {
-        print(retVal[i]);
-      }
+      for (int i = 0; i < retVal.length; i++) {}
 
       return true;
     } else {
@@ -217,7 +225,6 @@ class UserInfo {
     final localdb = await database;
     List<Map<String, dynamic>> result = await localdb
         .rawQuery("SELECT password FROM users WHERE userName = ?", [userName]);
-    print(result);
     return result[0]['password'];
   }
 }

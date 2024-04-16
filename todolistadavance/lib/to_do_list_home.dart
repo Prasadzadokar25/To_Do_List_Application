@@ -1,9 +1,8 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:todolistadavance/databaseConnection.dart';
+import 'package:todolistadavance/database_connection.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:todolistadavance/login_page.dart';
 
 // new tasks model class
 class NewTask {
@@ -314,8 +313,33 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Row(
+            children: [
+              Spacer(),
+              Padding(
+                padding: const EdgeInsets.only(top: 40, right: 20),
+                child: GestureDetector(
+                  onTap: () async {
+                    await UserInfo.getObject().removeCurrentUser();
+                    print("7777777");
+                    print(await UserInfo.getObject().getCurrentUser());
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        //transitionDuration: const Duration(milliseconds: 150),
+                        builder: (context) {
+                          return const Login();
+                        },
+                      ),
+                    );
+                  },
+                  child: Text("logout"),
+                ),
+              )
+            ],
+          ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 55, horizontal: 40),
+            padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 30),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
