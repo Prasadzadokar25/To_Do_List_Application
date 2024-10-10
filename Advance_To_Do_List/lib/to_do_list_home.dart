@@ -111,6 +111,12 @@ class _MyHomePageState extends State<MyHomePage> {
       dateController.clear();
     }
     showModalBottomSheet(
+      // enabledBorder: OutlineInputBorder(
+      //   borderRadius: BorderRadius.circular(10.0),
+      //   borderSide: BorderSide(
+      //     color: Colors.transparent, // Set border color to transparent
+      //   ),
+      // ),
       isScrollControlled: true,
       context: context,
       builder: (context) {
